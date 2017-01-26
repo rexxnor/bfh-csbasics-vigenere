@@ -3,15 +3,15 @@
 #include <string.h>
 #include <assert.h>
 
-void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch);
+void crypt(FILE *fp_r, FILE *fp_w, char *passphrase, int encswitch);
 
-void get_passphrase(unsigned char *pass) {
+void get_passphrase(char *pass) {
     printf("What is your passphrase?\n");
     scanf("%s", pass);
     printf("Done.\n");
 }
 
-void get_filepointers(char *read_f, char *write_f, unsigned char *passphrase, int encswitch) {
+void get_filepointers(const char *read_f, const char *write_f, char *passphrase, int encswitch) {
     FILE *fp_r = NULL, *fp_w = NULL;
 
     fp_r = fopen(read_f, "r");
@@ -27,7 +27,7 @@ void get_filepointers(char *read_f, char *write_f, unsigned char *passphrase, in
     }
 }
 
-void get_filepointers_read(char *read_f, char *write_r2, unsigned char *passphrase, int encswitch) {
+void get_filepointers_read(const char *read_f, const char *write_r2, char *passphrase, int encswitch) {
     FILE *fp_r = NULL, *fp_w = NULL;
 
     fp_r = fopen(read_f, "r");
@@ -43,7 +43,7 @@ void get_filepointers_read(char *read_f, char *write_r2, unsigned char *passphra
     }
 }
 
-void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
+void crypt(FILE *fp_r, FILE *fp_w, char *passphrase, int encswitch) {
     // if expression is false, aborts execution
     assert(fp_r != NULL);
     assert(fp_w != NULL);
@@ -54,35 +54,30 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
     int size;
     int i = 0;
     int charbuffer = sizeof(passphrase);
-    
 
     if (encswitch == 0){
         // sets size to read bytes and checks if size of last read char is not 0
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
             // writes char to file pointer
-            c = (c + passphrase[i]) % 256;
+            for(i = 0; i < charbuffer; i++){  
+                c = (c + passphrase[i]) % 256;
+            }
             fwrite(&c, sizeof(char), 1, fp_w);
-            i++;
-            i % charbuffer;
         }
         printf("Successfully encrypted!");
     } else if (encswitch == 1){
         // sets size to read bytes and checks if size of last read char is not 0
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
             // writes char to file pointer
-            c = (c - passphrase[i]) % 256;
+            for(i = 0; i < charbuffer; i++){  
+                c = (c - passphrase[i]) % 256;
+            }
             fwrite(&c, sizeof(char), 1, fp_w);
-            i++;
-            i % charbuffer;
         }
         printf("Successfully decrypted!");
     } else if (encswitch == 2){
         // sets size to read bytes and checks if size of last read char is not 0
-
-
-
-
-        unsigned char * content_r = malloc(42 * sizeof(char));
+        content_r = malloc(42 * sizeof(char));
         i = 0;
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
             if ( i >20)
@@ -90,43 +85,25 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
             content_r[i] = c;
             i++;
         }
-        printf("\n");
-        //printf("length of content_r: %d\n", sizeof(content_r));
+        printf("length of content_r: %d\n", sizeof(content_r));
         int u=0;
         for( u=0; u<20; u++)
-            printf( "%4d  ", content_r[u] );
+            printf( "%d\n", content_r[u] );
 
-
-
-
-        unsigned char * content_w = malloc(42 * sizeof(char));
+        content_w = malloc(42 * sizeof(char));
         i = 0;
-        while (size = sizeof(char) == fread(&d, sizeof(char), 1, fp_w) != 0) {
+        while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_w) != 0) {
             if ( i >20)
                 break;
-            content_w[i] = d;
+            content_w[i] = c;
             i++;
         }
-        printf("\n");
-        //printf("length of content_w: %d\n", sizeof(content_w));
+        printf("length of content_w: %d\n", sizeof(content_w));
         for( u=0; u<20; u++)
-            printf( "%4d  ", content_w[u] );
+            printf( "%d\n", content_r[u] );
 
-
-
-
-
-        unsigned char * solution = malloc(42 * sizeof(char));
+        solution = malloc(42 * sizeof(char));
         for( u=0; u<20; u++ )
-            solution[u] = (unsigned char)((255 + content_w[u] - content_r[u]) % 255);
-
-        printf("\nSolution:\n");
-        printf("###############################\n");
-        printf("# HACKED BY rexxnor & vimja   #\n");
-        printf("###############################\n");
-        for( u=0; u<20; u++ )
-            printf( "%c\n", solution[u] );
-        printf("\n\n\n");
         /*
         for( u=0; u <20; u++ ){
             // reads in char of second file as well
@@ -161,11 +138,9 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         //    //printf("%c\n",passphrase[i]);
         //    i++;
         //}
-        /*
         for ( i = 0; i < 20; i++){
             printf("%d\n",passphrase[i]);
         }
-        */
         //printf("Your passphrase is: %s ",passphrase);
     }
 }
@@ -187,16 +162,12 @@ char *remove_file_ending(char* mystr) {
 
 int main(int argc, char *argv[]) {
     // define var for passphrase
-    unsigned char *passphrase;
+    char *passphrase;
     char *filename;
     char *encrypted_filename;
     int encswitch = 0;
-    int i = 0;
     // allocate memory for passphrase
     passphrase = malloc(20 * sizeof(char));
-    for( i=0; i<20; i++ ){
-        passphrase[i] = '\0';
-    }
     filename = malloc(50 * sizeof(char));
     encrypted_filename = malloc(50 * sizeof(char));
     //
