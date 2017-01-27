@@ -140,35 +140,39 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         }
 
         // lots of print for nice asthetics
-        printf("#####################\n");
-        printf("# hacked by rexxnor #\n");
-        printf("#####################\n");
         printf("Your passphrase was:\n");
 
-        // 
+        // loop to determine repetition in the passphrase
+        // set i to zero for the loop
         i = 0; 
         for( u = 1 ; u < 30 ; u++ ){
+            // if first and character at u match
             if( solution[i] == solution[u] ){
+                // if second and character at u + 1 match
                 if (solution[i + 1] == solution[u + 1]){
+                   // set the u equals zero character
                    solution[u] = '\0';
+                   // set adjacent character also to zero
                    solution[u + 1] = '\0'; 
                 } 
             }
-            //printf( "%c", solution[u] );
         }
-
 
         // loop through the solution array to display hacked passphrase
         for( u = 0 ; u < 30 ; u++ ){
-            if( solution[u] != '\0' ){
-                printf( "%c", solution[u] );
+            // if there are not two nulls in a row, print current char
+            if( solution[u] != '\0' && solution[u + 1] != '\0'){
+                printf( "%c", solution[u]);
             } else {
-               break; 
+                // will print the last character that is valid
+                printf( "%c", solution[u]);
+                // if there are two nulls in a row, break the printing
+                break; 
             }
         }
 
-        // spacer
-        printf("\n");
+        // spacer for nice looks
+        printf("\n"); 
 
     }
 }
