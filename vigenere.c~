@@ -102,13 +102,13 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
     } else if (encswitch == 2){
         // read two files in memory and subtract char by char
         // define unsigned char variable and allocate memory for it
-        unsigned char * content_r = malloc(20 * sizeof(char));
+        unsigned char * content_r = malloc(30 * sizeof(char));
         // set i = 0 for new loop
         i = 0;
         // read from filepointer until null is read
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
-            // limit loops to 20 for max passphrase length
-            if ( i > 20){
+            // limit loops to 30 for max passphrase length
+            if ( i > 30){
                 break;
             }
             // set arraycontents to current char and increment i
@@ -117,13 +117,13 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         }
 
         // define unsigned char variable and allocate memory for it
-        unsigned char * content_w = malloc(20 * sizeof(char));
+        unsigned char * content_w = malloc(30 * sizeof(char));
         // set i = 0 for new loop
         i = 0;
         // read from filepointer until null is read
         while (size = sizeof(char) == fread(&d, sizeof(char), 1, fp_w) != 0) {
-            // limit loops to 20 for max passphrase length
-            if ( i > 20 ){
+            // limit loops to 30 for max passphrase length
+            if ( i > 30 ){
                 break;
             }
             // set arraycontents to current char and increment i
@@ -132,9 +132,9 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         }
 
         // define unsigned char variable and allocate memory for it
-        unsigned char * solution = malloc(20 * sizeof(char));
-        // loop through the first 20 chars
-        for( u = 0 ; u < 20 ; u++ ){
+        unsigned char * solution = malloc(30 * sizeof(char));
+        // loop through the first 30 chars
+        for( u = 0 ; u < 30 ; u++ ){
             // assign char for char the casted value of passphrase character
             solution[u] = (unsigned char)((256 + content_w[u] - content_r[u]) % 256);
         }
@@ -146,7 +146,7 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         printf("Your passphrase was:\n");
 
         // loop through the solution array to display hacked passphrase
-        for( u = 0 ; u < 20 ; u++ ){
+        for( u = 0 ; u < 30 ; u++ ){
             printf( "%c", solution[u] );
         }
 
@@ -181,10 +181,10 @@ int main(int argc, char *argv[]) {
     int encswitch = 0;
     int i = 0;
     // allocate memory for passphrase
-    passphrase = malloc(20 * sizeof(char));
+    passphrase = malloc(30 * sizeof(char));
 
     // writes zero characters to passphrase memory
-    for( i = 0 ; i < 20 ; i++ ){
+    for( i = 0 ; i < 30 ; i++ ){
         passphrase[i] = '\0';
     }
     // allocate memory for filenames
