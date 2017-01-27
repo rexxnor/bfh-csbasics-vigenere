@@ -71,30 +71,36 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
     if (encswitch == 0){
         // sets size to read bytes and checks if size of last read char is not 0
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
+            // reset counter if passphrase has two sequential null characters
+            if(passphrase[i] == 0 && passphrase[i + 1] == 0){
+                i = 0;
+            }
             // add passphrase char and modulo so it does not get too big
             c = (c + passphrase[i]) % 256;
             // write char to filepointer
             fwrite(&c, sizeof(char), 1, fp_w);
-            // increment i and take modulo of i so it does not get too big
+            // increment i 
             i++;
-            i % 20;
         }
         printf("Successfully encrypted!\n");
     } else if (encswitch == 1){
         // sets size to read bytes and checks if size of last read char is not 0
         while (size = sizeof(char) == fread(&c, sizeof(char), 1, fp_r) != 0) {
+            // reset counter if passphrase has two sequential null characters
+            if(passphrase[i] == 0 || passphrase[i] == '\0'){
+                i = 0;
+            }
             // subtract passphrase char and modulo so it does not get too big
+            //
             c = (c - passphrase[i]) % 256;
             // write char to filepointer
             fwrite(&c, sizeof(char), 1, fp_w);
-            // increment i and take modulo of i so it does not get too big
+            // increment i 
             i++;
-            i % 20;
         }
         printf("Successfully decrypted!\n");
     } else if (encswitch == 2){
         // read two files in memory and subtract char by char
-
         // define unsigned char variable and allocate memory for it
         unsigned char * content_r = malloc(20 * sizeof(char));
         // set i = 0 for new loop
