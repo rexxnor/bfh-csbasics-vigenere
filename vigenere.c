@@ -145,9 +145,26 @@ void crypt(FILE *fp_r, FILE *fp_w, unsigned char *passphrase, int encswitch) {
         printf("#####################\n");
         printf("Your passphrase was:\n");
 
+        // 
+        i = 0; 
+        for( u = 1 ; u < 30 ; u++ ){
+            if( solution[i] == solution[u] ){
+                if (solution[i + 1] == solution[u + 1]){
+                   solution[u] = '\0';
+                   solution[u + 1] = '\0'; 
+                } 
+            }
+            //printf( "%c", solution[u] );
+        }
+
+
         // loop through the solution array to display hacked passphrase
         for( u = 0 ; u < 30 ; u++ ){
-            printf( "%c", solution[u] );
+            if( solution[u] != '\0' ){
+                printf( "%c", solution[u] );
+            } else {
+               break; 
+            }
         }
 
         // spacer
@@ -252,8 +269,3 @@ int main(int argc, char *argv[]) {
     }
 }
 
-// todo: add size of passphrase as parameter to funtions
-//
-//
-//
-//
